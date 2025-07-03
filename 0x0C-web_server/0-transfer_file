@@ -1,16 +1,19 @@
 #!/bin/bash
 
-# Check if the number of arguments is less than 4
-if [ "$#" -ne 4 ]; then
-    echo "Usage: 0-transfer_file PATH_TO_FILE IP USERNAME PATH_TO_SSH_KEY"
+# Remote server details (modify these)
+HOST="3040d50bb61e.f861a72c.alx-cod.online"
+USERNAME="3040d50bb61e"
+SSH_KEY="$HOME/.ssh/id_rsa"  # Path to your SSH private key
+
+# Check if file argument is provided
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 PATH_TO_FILE"
     exit 1
 fi
 
-# Assign arguments to variables
 PATH_TO_FILE="$1"
-IP="$2"
-USERNAME="$3"
-PATH_TO_SSH_KEY="$4"
 
-# Transfer the file using SCP with strict host key checking disabled
-scp -o StrictHostKeyChecking=no -i "$PATH_TO_SSH_KEY" "$PATH_TO_FILE" "$USERNAME@$IP":~/
+# Transfer file using SCP (disable strict host checking)
+scp -o StrictHostKeyChecking=no -i "$SSH_KEY" "$PATH_TO_FILE" "$USERNAME@$HOST":~/
+
+echo "File transferred successfully to $USERNAME@$HOST:~/"
