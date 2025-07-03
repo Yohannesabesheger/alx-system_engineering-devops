@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Script to install nginx and configure it to return "Hello World!" on root request
+
+# Exit on any error
+set -e
+
+# Update and install nginx silently
+apt-get update -y
+apt-get install -y nginx
+
+# Set custom HTML content
+echo "Hello World!" > /var/www/html/index.nginx-debian.html
+
+# Start nginx without using systemctl
+service nginx start || /etc/init.d/nginx start
