@@ -1,21 +1,39 @@
 #!/usr/bin/env bash
-# Script to install Nginx and set a custom HTTP response header with the hostname
+# 0-custom_http_response_header
+# shellcheck disable=SC2154
 
-# Use non-interactive mode to avoid prompts
-export DEBIAN_FRONTEND=noninteractive
+set -euo pipefail
 
-# Update packages and install nginx
+############################
+# 1. Install & enable Nginx #
+############################
 apt-get update -y
-apt-get install -y nginx
+DEBIAN_FRONTEND=noninteractive apt-get install -y nginx
+systemctl enable nginx
 
-# Get hostname
-HOSTNAME=$(hostname)
+###############################################
+# 2. Create a snippet that sets the header    #
+###############################################
+HOSTNAME="$(hostname)"
+SNIPPET="/etc/nginx/snippets/custom_headers.conf"
 
-# Modify the default Nginx site to add the X-Served-By header
-CONFIG_FILE="/etc/nginx/sites-available/default"
-if ! grep -q "add_header X-Served-By" "$CONFIG_FILE"; then
-  sed -i "/location \/ {/a \\\tadd_header X-Served-By \"$HOSTNAME\";" "$CONFIG_FILE"
-fi
+cat > "$SNIPPET" <<EOF
+# Added by 0-custom_http_response_header
+add_header X-Served-By "$HOSTNAME";
+EOF
 
-# Test config and restart Nginx using SysV-style
-nginx -t && service nginx restart
+#########################################################
+# 3. Include the snippet in the default server block    #
+#########################################################
+DEFAULT_CONF="/etc/nginx/sites-available/default"
+
+# Add the include only once
+grep -q "custom_headers.conf" "$DEFAULT_CONF" || \
+  sed -i '/server_name _;/a \    include snippets/custom_headers.conf;' "$DEFAULT_CONF"
+
+############################
+# 4. Reload / restart Nginx #
+############################
+nginx -t   # sanity‑check
+systemctl reload nginx
+echo "✅ Nginx now returns X-Served-By: $HOSTNAME"
