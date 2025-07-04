@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# 1-install_load_balancer
+# shellcheck disable=SC2154
+
+set -euo pipefail
+
+# Hostnames of your backend web servers
+WEB_01_DNS="03ea93e00b2a.92ecda46.alx-cod.online"
+WEB_02_DNS="42de415a4f2a.14cd97b2.alx-cod.online"
+
+echo "🔧 Installing HAProxy..."
+apt-get update -y
+DEBIAN_FRONTEND=noninteractive apt-get install -y haproxy
+
+echo "🧾 Configuring HAProxy..."
+cat > /etc/haproxy/haproxy.cfg <<EOF
+global
+    log /dev/log    local0
+    log /dev/log    local1 notice
+    daemon
+    maxconn 2048
+    user haproxy
+    group haproxy
+
+defaults
+    log     global
+    mode    http
+    option  httplog
+    option  dontlognull
+    timeout connect 5000ms
+    timeout client  50000ms
+    timeout server  50000ms
+    option forwardfor
+
+frontend http_front
+    bind *:80
+    default_backend web_back
+
+backend web_back
+    balance roundrobin
+    server web01 ${WEB_01_DNS}:80 check
+    server web02 ${WEB_02_DNS}:80 check
+EOF
+
+echo "✅ Enabling HAProxy service..."
+systemctl enable haproxy
+systemctl restart haproxy
+
+echo "🧪 Verifying HAProxy config..."
+haproxy -c -f /etc/haproxy/haproxy.cfg
+
+echo "🎉 HAProxy load balancer setup complete."
+echo "    - web01: $WEB_01_DNS"
+echo "    - web02: $WEB_02_DNS"
