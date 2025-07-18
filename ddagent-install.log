@@ -1,0 +1,89 @@
+[34m
+* Datadog Agent 7 install script v1.39.0
+[0m
+/usr/bin/systemctl
+[34m
+* Installing curl gnupg
+[0m
+Get:1 https://deb.nodesource.com/node_18.x jammy InRelease [4,563 B]
+Hit:2 http://us.archive.ubuntu.com/ubuntu jammy InRelease
+Hit:3 http://security.ubuntu.com/ubuntu jammy-security InRelease
+Ign:4 https://apt.datadoghq.com stable InRelease
+Hit:5 http://us.archive.ubuntu.com/ubuntu jammy-updates InRelease
+Hit:6 https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu jammy InRelease
+Hit:7 https://apt.datadoghq.com stable Release
+Get:8 https://dl.google.com/linux/chrome/deb stable InRelease [1,825 B]
+Hit:9 https://ppa.launchpadcontent.net/keymanapp/keyman/ubuntu jammy InRelease
+Hit:10 http://us.archive.ubuntu.com/ubuntu jammy-backports InRelease
+Err:8 https://dl.google.com/linux/chrome/deb stable InRelease
+  The following signatures couldn't be verified because the public key is not available: NO_PUBKEY 32EE5355A6BC6E42
+Fetched 4,563 B in 1s (3,081 B/s)
+Reading package lists...
+W: An error occurred during the signature verification. The repository is not updated and the previous index files will be used. GPG error: https://dl.google.com/linux/chrome/deb stable InRelease: The following signatures couldn't be verified because the public key is not available: NO_PUBKEY 32EE5355A6BC6E42
+W: Failed to fetch https://dl.google.com/linux/chrome/deb/dists/stable/InRelease  The following signatures couldn't be verified because the public key is not available: NO_PUBKEY 32EE5355A6BC6E42
+W: Some index files failed to download. They have been ignored, or old ones used instead.
+Reading package lists...
+Building dependency tree...
+Reading state information...
+curl is already the newest version (7.81.0-1ubuntu1.20).
+gnupg is already the newest version (2.2.27-3ubuntu2.4).
+The following packages were automatically installed and are no longer required:
+  libexpat1:i386 libffi8:i386 libmpdec3:i386 libpython3-stdlib:i386
+  libpython3.10-minimal:i386 libpython3.10-stdlib:i386 libreadline8:i386
+  libsqlite3-0:i386 libstdc++6:i386 libwpe-1.0-1 libwpebackend-fdo-1.0-1
+Use 'sudo apt autoremove' to remove them.
+0 upgraded, 0 newly installed, 0 to remove and 358 not upgraded.
+[34m
+* Installing APT package sources for Datadog
+[0m
+gpg: key E6266D4AC0962C7D: "Datadog, Inc. APT key (2023-04-20) (APT key) <package+aptkey@datadoghq.com>" not changed
+gpg: Total number processed: 1
+gpg:              unchanged: 1
+gpg: key 0D826EB906462314: "Datadog, Inc. APT key (2024-05-15) (APT key) <package+aptkey@datadoghq.com>" not changed
+gpg: Total number processed: 1
+gpg:              unchanged: 1
+gpg: key E6266D4AC0962C7D: "Datadog, Inc. APT key (2023-04-20) (APT key) <package+aptkey@datadoghq.com>" not changed
+gpg: Total number processed: 1
+gpg:              unchanged: 1
+gpg: key 32637D44F14F620E: "Datadog, Inc. Master key (2020-09-08) <package+masterkey@datadoghq.com>" not changed
+gpg: Total number processed: 1
+gpg:              unchanged: 1
+gpg: key D3A80E30382E94DE: "Datadog, Inc <package@datadoghq.com>" not changed
+gpg: Total number processed: 1
+gpg:              unchanged: 1
+Ign:1 https://apt.datadoghq.com stable InRelease
+Hit:2 https://apt.datadoghq.com stable Release
+Get:4 https://apt.datadoghq.com stable/7 amd64 Packages [106 kB]
+Get:5 https://apt.datadoghq.com stable/7 i386 Packages [1,184 B]
+Get:6 https://apt.datadoghq.com stable/7 all Packages [1,184 B]
+Fetched 108 kB in 1s (107 kB/s)
+Reading package lists...
+  [33mInstalling package(s): datadog-agent datadog-signing-keys
+[0m
+bash: line 1342: /tmp/policy-do-not-start-service-rc.d: Permission denied
+[31mERROR
+Failed to install one or more packages, sometimes it may be
+due to another APT source failing. See the logs above to
+determine the cause.
+If the cause is unclear, please contact Datadog support.
+*****
+
+It looks like you hit an issue when trying to install the Datadog Agent.
+
+    
+
+Troubleshooting and basic usage information for the Datadog Agent are available at:
+
+    https://docs.datadoghq.com/agent/basic_agent_usage/
+[0m
+curl: (22) The requested URL returned error: 403
+Unable to send telemetry
+Do you want to send a failure report to Datadog (including ddagent-install.log)? (y/[n]) Enter an email address so we can follow up: OKA notification has been sent to Datadog with the contents of ddagent-install.log
+
+If you are still having problems, please send an email to support@datadoghq.com
+with the contents of ddagent-install.log and any information you think would be
+useful and we will do our very best to help you solve your problem.
+curl: (22) The requested URL returned error: 403
+Unable to send logs telemetry\n
+curl: (22) The requested URL returned error: 403
+Unable to send trace telemetry\n
