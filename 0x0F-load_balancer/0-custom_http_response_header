@@ -1,39 +1,22 @@
 #!/usr/bin/env bash
-# 0-custom_http_response_header
-# shellcheck disable=SC2154
+# Configures Nginx on a fresh Ubuntu server to include a custom X-Served-By header
 
-set -euo pipefail
-
-############################
-# 1. Install & enable Nginx #
-############################
+# Install Nginx
 apt-get update -y
-DEBIAN_FRONTEND=noninteractive apt-get install -y nginx
-systemctl enable nginx
+apt-get install -y nginx
 
-###############################################
-# 2. Create a snippet that sets the header    #
-###############################################
-HOSTNAME="$(hostname)"
-SNIPPET="/etc/nginx/snippets/custom_headers.conf"
+# Get the server's hostname
+HOSTNAME=$(hostname)
 
-cat > "$SNIPPET" <<EOF
-# Added by 0-custom_http_response_header
-add_header X-Served-By "$HOSTNAME";
-EOF
+# Add the custom header in the Nginx default config
+# This will be inside the server block, so we insert it before the closing '}' in location /
+CONFIG_FILE="/etc/nginx/sites-available/default"
 
-#########################################################
-# 3. Include the snippet in the default server block    #
-#########################################################
-DEFAULT_CONF="/etc/nginx/sites-available/default"
+# Backup the original config file before modifying
+cp "$CONFIG_FILE" "$CONFIG_FILE.bak"
 
-# Add the include only once
-grep -q "custom_headers.conf" "$DEFAULT_CONF" || \
-  sed -i '/server_name _;/a \    include snippets/custom_headers.conf;' "$DEFAULT_CONF"
+# Update config to include custom header
+sed -i "/location \/ {/a \        add_header X-Served-By $HOSTNAME;" "$CONFIG_FILE"
 
-############################
-# 4. Reload / restart Nginx #
-############################
-nginx -t   # sanity‑check
-systemctl reload nginx
-echo "✅ Nginx now returns X-Served-By: $HOSTNAME"
+# Restart Nginx to apply changes
+systemctl restart nginx
